@@ -220,8 +220,8 @@ function CreateNote (note) {
     this.lineW = 4;
     this.txtSize = 17;
     this.txtStyle = BOLD;
-  } else if (this.function == "vadi") {
-    this.extraX = 0;
+  } else if (this.function == "dominant") {
+    this.extraX = 5;
     this.lineW = 2;
     this.txtSize = 15;
     this.txtStyle = BOLD;
