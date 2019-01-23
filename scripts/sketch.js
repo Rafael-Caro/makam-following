@@ -2,7 +2,7 @@ var extraSpaceH = 0;
 var extraSpaceW = 0;
 var mainSpace = 600;
 var margin = 10;
-var easing = 0.5;
+var easing = 0.2;
 var backColor;
 var frontColor;
 
