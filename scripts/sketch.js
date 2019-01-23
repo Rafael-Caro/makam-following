@@ -272,6 +272,7 @@ function start () {
     track.stop();
   }
   loaded = false;
+  paused = true;
   currentTime = 0;
   var currentRecording = recordingsInfo[recordingsList[select.value()]];
   easing = currentRecording.info.easing;
