@@ -16,17 +16,23 @@
       "pitchSpace": [
         {
           "noteName": "",
+          "pitch": 277.18,
+          "cent": -1010,
+          "function": "",
+          "key": "q"
+        },{
+          "noteName": "",
           "pitch": 294.51,
           "cent": -905,
           "function": "",
-          "key": "q"
+          "key": "w"
         },
         {
           "noteName": "",
           "pitch": 442.55,
           "cent": -200,
           "function": "",
-          "key": "w"
+          "key": "e"
         },
         {
           "noteName": "Dügah",
