@@ -145,12 +145,12 @@ function draw () {
       stroke(frontColor);
       strokeWeight(1);
       ellipse(extraSpaceW+mainSpace/2, cursorY, 5, 5);
-      textAlign(LEFT, BOTTOM);
+      textAlign(RIGHT, BOTTOM);
       textSize(12);
       textStyle(NORMAL);
       noStroke();
       fill(50);
-      text(str(p.toFixed(2)), extraSpaceW+mainSpace/2+margin, buttonPlay.y+buttonPlay.height);
+      text(str(p.toFixed(2)) + ' cents', extraSpaceW+mainSpace/2+margin+65, buttonPlay.y+buttonPlay.height);
     }
   }
 
