@@ -130,19 +130,18 @@ function draw () {
     clock.display();
   }
 
-  if (!paused) {
-    currentTime = track.currentTime();
+  if (loaded) {
+    if (!paused) {
+      currentTime = track.currentTime();
+    }
 
-    var x = str(track.currentTime().toFixed(2));
+    var x = str(currentTime.toFixed(2));
     var p = pitchTrack[x];
     if (p >= minHz && p <= maxHz) {
       var targetY = map(p, minHz, maxHz, cursorBottom, cursorTop);
       cursorY += (targetY - cursorY) * easing;
-      // print(x, p, y);
       noStroke();
-      // fill(120, 0, 0);
       fill("red");
-      // noFill();
       stroke(frontColor);
       strokeWeight(1);
       ellipse(extraSpaceW+mainSpace/2, cursorY, 5, 5);
