@@ -46,7 +46,7 @@ function preload() {
 }
 
 function setup () {
-  var canvas = createCanvas(extraSpaceW+mainSpace, extraSpaceH+mainSpace);
+  var canvas = createCanvas(extraSpaceW+mainSpace, extraSpaceH+mainSpace+150);
   var div = select("#sketch-holder");
   div.style("width: " + width + "px; margin: 10px auto; position: relative;");
   canvas.parent("sketch-holder");
@@ -224,22 +224,22 @@ function CreateNote (note) {
   if (this.function == "tonic") {
     this.extraX = this.txtExtraX;
     this.lineW = 4;
-    this.txtSize = 17;
+    this.txtSize = 14;
     this.txtStyle = BOLD;
   } else if (this.function == "dominant") {
     this.extraX = 5;
     this.lineW = 2;
-    this.txtSize = 15;
+    this.txtSize = 12;
     this.txtStyle = BOLD;
   } else if (this.function == "samvadi") {
     this.extraX = 0;
     this.lineW = 2;
-    this.txtSize = 15;
+    this.txtSize = 12;
     this.txtStyle = NORMAL;
   } else {
     this.extraX = 0;
     this.lineW = 1;
-    this.txtSize = 15;
+    this.txtSize = 12;
     this.txtStyle = NORMAL;
   }
 
@@ -258,9 +258,13 @@ function CreateNote (note) {
     textSize(this.txtSize);//this.radius*0.9);
     textStyle(this.txtStyle);//this.txtStyle);
     fill(frontColor);
-    text(str(this.cent) + ' (' + this.name + ')', this.txtX1, this.y);
+    if (this.name != '') {
+      text(str(this.cent) + ' (' + this.name + ')', this.txtX1, this.y);
+    } else {
+      text(str(this.cent), this.txtX1, this.y);
+    }
     textAlign(RIGHT, CENTER);
-    textSize(this.txtSize*0.8);
+    textSize(this.txtSize*0.9);
     text(this.key, this.txtX2, this.y);
   }
 }
