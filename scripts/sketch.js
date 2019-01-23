@@ -214,8 +214,9 @@ function CreateNote (note) {
   this.name = note.noteName;
   this.key = note.key;
   this.function = note.function;
+  this.txtExtraX = 10;
   if (this.function == "tonic") {
-    this.extraX = 20;
+    this.extraX = this.txtExtraX;
     this.lineW = 4;
     this.txtSize = 17;
     this.txtStyle = BOLD;
@@ -235,19 +236,26 @@ function CreateNote (note) {
     this.txtSize = 15;
     this.txtStyle = NORMAL;
   }
-  this.x2 = this.x1 + noteLine/2; // + (noteRadius1*2 + margin) * this.position;
+
+  this.lineX1 = this.x1 - noteLine/2 - this.extraX;
+  this.lineX2 = this.x1 + noteLine/2 + this.extraX;
+  this.txtX1 = this.x1 + noteLine/2 + this.txtExtraX + margin;
+  this.txtX2 = this.x1 - noteLine/2 - this.txtExtraX - margin;
 
   this.display = function () {
     stroke(frontColor);
     strokeWeight(this.lineW);
-    line(this.x1-noteLine/2-this.extraX, this.y, this.x2, this.y)
+    line(this.lineX1, this.y, this.lineX2, this.y)
 
     textAlign(LEFT, CENTER);
     noStroke();
     textSize(this.txtSize);//this.radius*0.9);
     textStyle(this.txtStyle);//this.txtStyle);
     fill(frontColor);
-    text(this.name + ' (' + this.key + ')', this.x2 + margin/2, this.y);
+    text(this.name, this.txtX1, this.y);
+    textAlign(RIGHT, CENTER);
+    textSize(this.txtSize*0.8);
+    text(this.key, this.txtX2, this.y);
   }
 }
 
