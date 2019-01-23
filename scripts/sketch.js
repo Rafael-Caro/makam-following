@@ -373,11 +373,11 @@ function mouseClicked () {
 }
 
 function keyPressed () {
-  soundList[key].start();
+  soundList[key.toLowerCase()].start();
 }
 
 function keyReleased () {
-  soundList[key].stop();
+  soundList[key.toLowerCase()].stop();
 }
 
 function niceTime (seconds) {
