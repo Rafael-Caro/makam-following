@@ -54,7 +54,7 @@ function setup () {
   ellipseMode(RADIUS);
   angleMode(DEGREES);
   imageMode(CENTER);
-  textFont("Laila");
+  // textFont("Laila");
   strokeJoin(ROUND);
   strokeCap(ROUND);
 
@@ -235,7 +235,7 @@ function CreateNote (note) {
     this.txtSize = 15;
     this.txtStyle = NORMAL;
   }
-  this.x2 = this.x1 + noteLine/2 + noteRadius1 + margin/2; // + (noteRadius1*2 + margin) * this.position;
+  this.x2 = this.x1 + noteLine/2; // + (noteRadius1*2 + margin) * this.position;
 
   this.display = function () {
     stroke(frontColor);
@@ -247,7 +247,7 @@ function CreateNote (note) {
     textSize(this.txtSize);//this.radius*0.9);
     textStyle(this.txtStyle);//this.txtStyle);
     fill(frontColor);
-    text(this.name + ' (' + this.key + ')', this.x2, this.y);
+    text(this.name + ' (' + this.key + ')', this.x2 + margin/2, this.y);
   }
 }
 
@@ -351,12 +351,10 @@ function mouseClicked () {
 }
 
 function keyPressed () {
-  print(key);
   soundList[key].start();
 }
 
 function keyReleased () {
-  print(key);
   soundList[key].stop();
 }
 
