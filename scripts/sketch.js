@@ -10,6 +10,7 @@ var recordingsInfo;
 var recordingsList;
 var pitchSpace;
 var noteList = [];
+var soundList = {};
 var noteRadius1 = 20;
 var noteRadius2 = 17;
 var noteLine = 50;
@@ -118,10 +119,7 @@ function draw () {
   // line(0, cursorBottom, width, cursorBottom);
 
   for (var i = 0; i < noteList.length; i++) {
-    noteList[i].displayLines();
-  }
-  for (var i = 0; i < noteList.length; i++) {
-    noteList[i].displayNote();
+    noteList[i].display();
   }
 
   navBox.displayBack();
@@ -213,69 +211,53 @@ function CreateNavCursor () {
 function CreateNote (note) {
   this.x1 = extraSpaceW + mainSpace/2;
   this.y = map(note.cent, minHz, maxHz, cursorBottom, cursorTop);
-  this.name = note.note;
+  this.name = note.noteName;
+  this.key = note.key;
   this.function = note.function;
   if (this.function == "tonic") {
-    this.radius = noteRadius1;
     this.extraX = 20;
-    this.col = frontColor;
-    this.strokeW = 4;
     this.lineW = 4;
-    this.txtCol = backColor;
+    this.txtSize = 17;
     this.txtStyle = BOLD;
   } else if (this.function == "vadi") {
-    this.radius = noteRadius1;
     this.extraX = 0;
-    this.col = backColor;
-    this.strokeW = 4;
     this.lineW = 2;
-    this.txtCol = frontColor;
+    this.txtSize = 15;
     this.txtStyle = BOLD;
   } else if (this.function == "samvadi") {
-    this.radius = noteRadius2;
     this.extraX = 0;
-    this.col = backColor;
-    this.strokeW = 2;
     this.lineW = 2;
-    this.txtCol = frontColor;
+    this.txtSize = 15;
     this.txtStyle = NORMAL;
   } else {
-    this.radius = noteRadius2;
     this.extraX = 0;
-    this.col = backColor;
-    this.strokeW = 0;
     this.lineW = 1;
-    this.txtCol = frontColor;
+    this.txtSize = 15;
     this.txtStyle = NORMAL;
   }
-  if (noteList.length == 0) {
-    this.position = 0;
-  } else if (noteList[noteList.length-1].position == 0) {
-    this.position = 1;
-  } else {
-    this.position = 0;
-  }
-  this.x2 = this.x1 + noteLine/2 + noteRadius1 + (noteRadius1*2 + margin) * this.position;
+  this.x2 = this.x1 + noteLine/2 + noteRadius1 + margin/2; // + (noteRadius1*2 + margin) * this.position;
 
-  this.displayLines = function () {
+  this.display = function () {
     stroke(frontColor);
     strokeWeight(this.lineW);
     line(this.x1-noteLine/2-this.extraX, this.y, this.x2, this.y)
-  }
 
-  this.displayNote = function () {
-    stroke(frontColor);
-    strokeWeight(this.strokeW);
-    fill(this.col);
-    ellipse(this.x2, this.y, this.radius, this.radius);
-
-    textAlign(CENTER, CENTER);
+    textAlign(LEFT, CENTER);
     noStroke();
-    textSize(noteRadius1*0.9);//this.radius*0.9);
-    textStyle(BOLD);//this.txtStyle);
-    fill(this.txtCol);
-    text(this.name, this.x2, this.y+this.radius*0.1);
+    textSize(this.txtSize);//this.radius*0.9);
+    textStyle(this.txtStyle);//this.txtStyle);
+    fill(frontColor);
+    text(this.name + ' (' + this.key + ')', this.x2, this.y);
   }
+}
+
+function createSound (note) {
+  this.pitch = note.pitch;
+  this.key = note.key;
+  this.osc = new p5.Oscillator();
+  this.osc.setType("sawtooth");
+  this.osc.freq(this.pitch);
+  soundList[this.key] = this.osc;
 }
 
 function start () {
@@ -297,6 +279,7 @@ function start () {
   maxHz = pitchSpace[pitchSpace.length-1].cent;
   for (var i = 0; i < pitchSpace.length; i++) {
     var note = new CreateNote(pitchSpace[i]);
+    createSound(pitchSpace[i]);
     noteList.push(note);
   }
   pitchTrack = currentRecording.melody.pitchTrack;
@@ -365,6 +348,16 @@ function mouseClicked () {
   if (loaded) {
     navBox.clicked();
   }
+}
+
+function keyPressed () {
+  print(key);
+  soundList[key].start();
+}
+
+function keyReleased () {
+  print(key);
+  soundList[key].stop();
 }
 
 function niceTime (seconds) {
