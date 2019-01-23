@@ -2,7 +2,7 @@ var extraSpaceH = 0;
 var extraSpaceW = 0;
 var mainSpace = 600;
 var margin = 10;
-var easing = 0.2;
+var easing;
 var backColor;
 var frontColor;
 
@@ -274,6 +274,7 @@ function start () {
   loaded = false;
   currentTime = 0;
   var currentRecording = recordingsInfo[recordingsList[select.value()]];
+  easing = currentRecording.info.easing;
   trackFile = currentRecording.info.trackFile;
   title = currentRecording.info.title;
   artist = currentRecording.info.artist;
@@ -282,8 +283,8 @@ function start () {
     .html("+info");
   trackDuration = currentRecording.info.duration;
   pitchSpace = currentRecording.melody.pitchSpace;
-  minHz = pitchSpace[0].cent;
-  maxHz = pitchSpace[pitchSpace.length-1].cent;
+  minHz = pitchSpace[0].cent - 100;
+  maxHz = pitchSpace[pitchSpace.length-1].cent + 100;
   noteList = [];
   soundList = {};
   for (var i = 0; i < pitchSpace.length; i++) {

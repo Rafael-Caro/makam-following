@@ -4,7 +4,7 @@
   ],
   "36944934-556a-42d9-9360-690a306c5d1f": {
     "info": {
-      "prueba": "undefined",
+      "easing": 0.2,
       "makam": "hüseyni",
       "duration": 176.457125,
       "title": "Hüseyni Ney Taksimi",
@@ -17766,6 +17766,7 @@
   },
   "9d195cbe-8e9f-47ef-83f0-e7c0b8af1697": {
     "info": {
+      "easing": 0.5,
       "makam": "hüseyni",
       "duration": 278.15183333333334,
       "title": "Hüseyni Saz Semai",
