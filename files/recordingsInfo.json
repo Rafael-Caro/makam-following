@@ -40,77 +40,77 @@
           "pitch": 496.74,
           "cent": 0,
           "function": "tonic",
-          "key": "s"
+          "key": "a"
         },
         {
           "noteName": "Segah",
           "pitch": 554.37,
           "cent": 190,
           "function": "",
-          "key": "d"
+          "key": "s"
         },
         {
           "noteName": "Çargah",
           "pitch": 589.03,
           "cent": 295,
           "function": "",
-          "key": "f"
+          "key": "d"
         },
         {
           "noteName": "",
           "pitch": 644.2,
           "cent": 450,
           "function": "",
-          "key": "g"
+          "key": "f"
         },
         {
           "noteName": "Neva",
           "pitch": 666.92,
           "cent": 510,
           "function": "",
-          "key": "h"
+          "key": "g"
         },
         {
           "noteName": "Hüseyni",
           "pitch": 752.92,
           "cent": 720,
           "function": "dominant",
-          "key": "j"
+          "key": "h"
         },
         {
           "noteName": "",
           "pitch": 804.64,
           "cent": 835,
           "function": "",
-          "key": "k"
+          "key": "j"
         },
         {
           "noteName": "",
           "pitch": 828.21,
           "cent": 885,
           "function": "",
-          "key": "l"
+          "key": "k"
         },
         {
           "noteName": "Gerdaniye",
           "pitch": 885.1,
           "cent": 1000,
           "function": "",
-          "key": ";"
+          "key": "l"
         },
         {
           "noteName": "Muhayyer",
           "pitch": 993.49,
           "cent": 1200,
           "function": "tonic",
-          "key": "'"
+          "key": ";"
         },
         {
           "noteName": "",
           "pitch": 1108.73,
           "cent": 1390,
           "function": "",
-          "key": "\\"
+          "key": "'"
         }
       ],
       "pitchTrack": {
