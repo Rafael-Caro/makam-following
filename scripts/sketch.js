@@ -145,6 +145,12 @@ function draw () {
       stroke(frontColor);
       strokeWeight(1);
       ellipse(extraSpaceW+mainSpace/2, cursorY, 5, 5);
+      textAlign(LEFT, BOTTOM);
+      textSize(12);
+      textStyle(NORMAL);
+      noStroke();
+      fill(50);
+      text(str(p.toFixed(2)), extraSpaceW+mainSpace/2+margin, buttonPlay.y+buttonPlay.height);
     }
   }
 
@@ -209,7 +215,8 @@ function CreateNavCursor () {
 
 function CreateNote (note) {
   this.x1 = extraSpaceW + mainSpace/2;
-  this.y = map(note.cent, minHz, maxHz, cursorBottom, cursorTop);
+  this.cent = note.cent;
+  this.y = map(this.cent, minHz, maxHz, cursorBottom, cursorTop);
   this.name = note.noteName;
   this.key = note.key;
   this.function = note.function;
@@ -251,7 +258,7 @@ function CreateNote (note) {
     textSize(this.txtSize);//this.radius*0.9);
     textStyle(this.txtStyle);//this.txtStyle);
     fill(frontColor);
-    text(this.name, this.txtX1, this.y);
+    text(str(this.cent) + ' (' + this.name + ')', this.txtX1, this.y);
     textAlign(RIGHT, CENTER);
     textSize(this.txtSize*0.8);
     text(this.key, this.txtX2, this.y);
@@ -306,12 +313,12 @@ function CreateClock () {
   this.display = function () {
     this.now = niceTime(currentTime);
     this.clock = this.now + " / " + this.total;
-    textAlign(CENTER, BOTTOM);
+    textAlign(RIGHT, BOTTOM);
     textSize(12);
     textStyle(NORMAL);
     noStroke();
     fill(50);
-    text(this.clock, extraSpaceW+mainSpace/2, buttonPlay.y+buttonPlay.height);
+    text(this.clock, extraSpaceW+mainSpace/2-margin, buttonPlay.y+buttonPlay.height);
   }
 }
 
