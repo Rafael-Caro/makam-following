@@ -66,11 +66,11 @@ function setup () {
   infoLink = select("#info-link");
   infoLink.position(width-60, extraSpaceH + margin*3.5 + 30);
   select = createSelect()
-    .size(120, 25)
-    .position(margin, margin)
+    .size(150, 25)
+    .position(margin, height - margin * 2 - navBoxH - 25)
     .changed(start)
     .parent("sketch-holder");
-  select.option("Elige");
+  select.option("Select a recording");
   var noRec = select.child();
   noRec[0].setAttribute("selected", "true");
   noRec[0].setAttribute("disabled", "true");
@@ -79,7 +79,7 @@ function setup () {
   for (var i = 0; i < recordingsList.length; i++) {
     select.option(recordingsInfo[recordingsList[i]].info.option, i);
   }
-  buttonPlay = createButton("Carga el audio")
+  buttonPlay = createButton("Load audio")
     .size(120, 25)
     .position(width - 120 - margin, height - margin * 2 - navBoxH - 25)
     .mouseClicked(player)
@@ -194,7 +194,7 @@ function CreateNavCursor () {
   this.update = function () {
     this.x = map(currentTime, 0, trackDuration, navBox.x1+navCursorW/2, navBox.x2-navCursorW/2);
     if (navBox.x2 - navCursorW/2 - this.x < 0.005) {
-      buttonPlay.html("¡Comienza!");
+      buttonPlay.html("Play!");
       track.stop();
       paused = true;
       currentTime = 0;
@@ -284,7 +284,7 @@ function start () {
   }
   pitchTrack = currentRecording.melody.pitchTrack;
   clock = new CreateClock;
-  buttonPlay.html("Carga el audio");
+  buttonPlay.html("Load audio");
   buttonPlay.removeAttribute("disabled");
 }
 
@@ -315,16 +315,16 @@ function player () {
         track.jump(jump);
         jump = undefined;
       }
-      buttonPlay.html("Pausa");
+      buttonPlay.html("Pause");
     } else {
       paused = true;
       currentTime = track.currentTime();
       track.pause();
-      buttonPlay.html("Sigue");
+      buttonPlay.html("Play");
     }
   } else {
     initLoading = millis();
-    buttonPlay.html("Cargando...");
+    buttonPlay.html("Loading...");
     buttonPlay.attribute("disabled", "true");
     select.attribute("disabled", "true");
     track = loadSound("tracks/" + trackFile, soundLoaded, failedLoad);
@@ -332,7 +332,7 @@ function player () {
 }
 
 function soundLoaded () {
-  buttonPlay.html("¡Comienza!");
+  buttonPlay.html("Play!");
   buttonPlay.removeAttribute("disabled");
   select.removeAttribute("disabled");
   loaded = true;
