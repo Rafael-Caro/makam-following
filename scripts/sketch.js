@@ -277,6 +277,8 @@ function start () {
   pitchSpace = currentRecording.melody.pitchSpace;
   minHz = pitchSpace[0].cent;
   maxHz = pitchSpace[pitchSpace.length-1].cent;
+  noteList = [];
+  soundList = {};
   for (var i = 0; i < pitchSpace.length; i++) {
     var note = new CreateNote(pitchSpace[i]);
     createSound(pitchSpace[i]);
