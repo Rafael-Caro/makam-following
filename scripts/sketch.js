@@ -225,7 +225,7 @@ function CreateNote (note) {
   this.x1 = extraSpaceW + mainSpace/2;
   this.cent = note.cent;
   this.y = map(this.cent, minHz, maxHz, cursorBottom, cursorTop);
-  this.name = note.noteName;
+  this.name = note.perdeName;
   this.key = note.key;
   this.function = note.function;
   this.txtExtraX = 10;
