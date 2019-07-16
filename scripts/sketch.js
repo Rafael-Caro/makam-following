@@ -145,7 +145,7 @@ function draw () {
 
     var x = str(currentTime.toFixed(2));
     var p = pitchTrack[x];
-    if (p != "silence" && p >= minHz && p <= maxHz) {
+    if (p != "S" && p >= minHz && p <= maxHz) {
       var targetY = map(p, minHz, maxHz, cursorBottom, cursorTop);
       cursorY += (targetY - cursorY) * easing;
       noStroke();
