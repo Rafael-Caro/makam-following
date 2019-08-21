@@ -24,6 +24,9 @@ var title;
 var artist;
 var link;
 
+var makam;
+var usul;
+
 var select;
 var buttonPlay;
 
@@ -40,6 +43,16 @@ var loaded = false;
 var paused = true;
 var currentTime = 0;
 var jump;
+
+var looped = false;
+var loopBound0;
+var loopBound1;
+var loopTimeStart;
+var loopTimeEnd;
+var firstClick = false;
+var secondClick = false;
+
+var images = [];
 
 function preload() {
   recordingsInfo = loadJSON("files/recordingsInfo.json");
@@ -88,11 +101,20 @@ function setup () {
     .attribute("disabled", "true")
     .parent("sketch-holder");
 
+
   navBox = new createNavigationBox();
   navCursor = new CreateNavCursor();
 
   cursorTop = extraSpaceH + margin*5 + 50;
   cursorBottom = navBox.y1-margin*3;
+
+  buttonLoop = createButton('L: Off')
+    .size(50,25)
+    .position(width - 120 - margin*7,margin)
+    .mouseClicked(loopControl)
+    .attribute("disabled", "true")
+    .parent("sketch-holder");
+
 }
 
 function draw () {
@@ -119,6 +141,26 @@ function draw () {
   fill(0, 150);
   text(artist, extraSpaceW + mainSpace/2, extraSpaceH + margin*4 + 30);
 
+
+//Makam Usul Info Display
+  var makam_usul_Text = join(['(Makam: ',makam,', Usül: ',usul,')'],'');
+
+  if(select.selected() != "Select a recording"){
+    // Makam-Usul Display
+    textAlign(CENTER, BOTTOM);
+    textStyle(NORMAL);
+    textSize(18);
+    strokeWeight(3);
+    stroke(frontColor);
+    fill(backColor);
+    text(makam_usul_Text, extraSpaceW + mainSpace/2, height-navBoxH-margin*3/2);
+
+    // Usul Information
+    //dataDir = join(['files/',usul,'.jpg'],'');
+    //img = loadImage(dataDir);
+    //image(img,100,100);    
+   }
+
   // stroke("red");
   // strokeWeight(1);
   // line(0, cursorTop, width, cursorTop);
@@ -136,13 +178,27 @@ function draw () {
     navCursor.update();
     navCursor.display();
     clock.display();
+
+    buttonLoop.removeAttribute("disabled");
+  }
+
+  // Loop Player
+  if(loaded){
+    if(!paused){
+      currentTime = track.currentTime();
+      
+      if(looped && secondClick){
+        if(loopTimeEnd-currentTime < 0.01){
+          track.jump(loopTimeStart);
+        }   
+      }    
+    }
   }
 
   if (loaded) {
     if (!paused) {
       currentTime = track.currentTime();
     }
-
     var x = str(currentTime.toFixed(2));
     var p = pitchTrack[x];
     if (p != "S" && p >= minHz && p <= maxHz) {
@@ -162,8 +218,7 @@ function draw () {
       text(str(p.toFixed(2)) + ' cents', width-margin, navBox.y1 - margin);
     }
   }
-
-  navBox.displayFront();
+  navBox.displayFront(); 
 }
 
 function createNavigationBox () {
@@ -189,16 +244,44 @@ function createNavigationBox () {
     line(this.x1, this.y2, this.x2, this.y2);
   }
 
+  
+
   this.clicked = function () {
-    if (mouseX > this.x1 && mouseX < this.x2 && mouseY > this.y1 && mouseY < this.y2) {
-      jump = map(mouseX, this.x1, this.x2, 0, trackDuration);
-      if (paused) {
-        currentTime = jump;
-      } else {
-        track.jump(jump);
-        jump = undefined;
+
+    // Click Validation
+    var click = (mouseX > this.x1 && mouseX < this.x2 && mouseY > this.y1 && mouseY < this.y2);
+    var dummy;
+    if(!looped){
+      // if the loop button is off jump normally
+      if(click) {
+        jump = map(mouseX, this.x1, this.x2, 0, trackDuration);
+        if (paused) {
+          currentTime = jump;
+        } else {
+          track.jump(jump);
+          jump = undefined;
+        }
       }
-    }
+    } else {
+      // if the loop button is on take time inputs
+      if(firstClick && click){
+        secondClick = true;
+        loopBound1 = mouseX;
+        if(loopBound0 > loopBound1){
+          dummy = loopBound0;
+          loopBound0 = loopBound1;
+          loopBound1 = dummy;
+          loopTimeStart = map(loopBound0, this.x1, this.x2, 0, trackDuration).toFixed(2);      
+        }
+        loopTimeEnd = map(loopBound1, this.x1, this.x2, 0, trackDuration).toFixed(2);
+        firstClick = false;         
+      }else if ((!firstClick) && click) {
+        firstClick = true;
+        loopBound0 = mouseX;
+        loopTimeStart = map(loopBound0, this.x1, this.x2, 0, trackDuration).toFixed(2);
+        secondClick = false;
+      }
+    }      
   }
 }
 
@@ -219,6 +302,16 @@ function CreateNavCursor () {
     stroke(frontColor);
     strokeWeight(navCursorW);
     line(this.x, navBox.y1+navCursorW/2, this.x, navBox.y2-navCursorW/2);
+
+    if(looped){
+      stroke(0, 150);
+      strokeWeight(navCursorW/1.5);
+      line(loopBound0, navBox.y1+navCursorW/2, loopBound0, navBox.y2-navCursorW/2);
+
+      stroke(0, 150);
+      strokeWeight(navCursorW/1.5);
+      line(loopBound1, navBox.y1+navCursorW/2, loopBound1, navBox.y2-navCursorW/2);
+    }
   }
 }
 
@@ -299,6 +392,8 @@ function start () {
   trackFile = currentRecording.info.trackFile;
   title = currentRecording.info.title;
   artist = currentRecording.info.artist;
+  makam = currentRecording.info.makam
+  usul = currentRecording.info.usul
   link = currentRecording.info.link;
   infoLink.attribute("href", link)
     .html("+info");
@@ -338,9 +433,9 @@ function CreateClock () {
 function player () {
   if (loaded) {
     if (paused) {
-      paused = false;
+      paused = false;     
       if (jump == undefined) {
-        track.play();
+      track.play();
       } else {
         track.play();
         track.jump(jump);
@@ -382,11 +477,53 @@ function mouseClicked () {
 }
 
 function keyPressed () {
+  var rewind = 5; 
+  if(keyCode == LEFT_ARROW && loaded && (!paused) ){
+    rewindd(rewind);
+  }else if(keyCode == RIGHT_ARROW && loaded && (!paused)){
+    proceed(rewind);
+  }
   soundList[key.toLowerCase()].start();
+}
+
+function rewindd(r){
+  // The name rewind() does not work somehow
+  if(currentTime >= r){
+    jump = currentTime - r;
+  } else {
+    jump = 0;
+  }
+  track.jump(jump);
+}
+
+function proceed(r){
+  if(currentTime <= trackDuration-r){
+    jump = currentTime + r;
+  } else {
+    jump = trackDuration;
+  }
+  track.jump(jump);
+}
+
+function loopControl(){
+  looped = !looped;
+
+  if(looped){
+    buttonLoop.html('L: On');
+  } else {
+    buttonLoop.html('L: Off');
+  }
 }
 
 function keyReleased () {
   soundList[key.toLowerCase()].stop();
+}
+
+// Play/ Pause with the spacebar
+function keyTyped() {
+  if (key === ' ' && loaded) {
+    player();  
+  }
 }
 
 function niceTime (seconds) {
