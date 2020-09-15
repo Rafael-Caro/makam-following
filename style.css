@@ -1,0 +1,94 @@
+* {
+  margin: 0;
+}
+
+
+body {
+  width: 100%;
+}
+
+main{
+  background-color: white;
+  width: 900px;
+  margin: 0 auto;
+  padding: 20px 30px;
+}
+
+nav{
+  background-color: white;
+  width: 900px;
+  margin: 0 auto;
+  padding: 20px 0px;
+  height: 1em;
+  margin-bottom: 2px;
+}
+
+
+
+#flag {
+  height: 0.8em;
+}
+
+#language{
+  float : right;
+  font-size: 1.3em;
+  color: #900;
+}
+
+#help{
+  color: #900;    
+  float : left;
+  font-size: 1.3em;
+}  
+
+#home{
+  color: #900;    
+  float : left;
+  font-size: 1.3em;
+}
+
+main {
+  height: 100%;
+}
+
+p {
+  text-align: justify;
+  padding-bottom: 1em;
+}
+
+#icon {
+  display: inline;
+  height: 1em;
+}
+
+li {
+  text-align: justify;
+  padding-bottom: 0.5em;
+}
+
+#sketch-holder {
+  border: 3px inset;
+} 
+
+#sketch-line {
+  border: 1px inset;
+} 
+
+img {
+  display: inline-block;
+}
+
+section {
+  background-color: white;
+  width: 900px;
+  margin: 2px auto;
+  padding: 10px 30px;
+  height: 100%;
+  font-size: 0.8em;
+}
+
+section p {
+  padding-bottom: 0.5em;
+  text-align: center;
+}
+

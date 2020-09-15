@@ -39,23 +39,42 @@ var navBox;
 var navCursorW = 4;
 var clock;
 
+//Play-Pause
 var loaded = false;
 var paused = true;
 var currentTime = 0;
 var jump;
 
+// Loop Variables
 var looped = false;
+var firstClick = false;
+var secondClick = false;
 var loopBound0;
 var loopBound1;
 var loopTimeStart;
 var loopTimeEnd;
-var firstClick = false;
-var secondClick = false;
 
 var images = [];
 
+//Language Options
+var lang;
+var lang_select; 
+var lang_load;
+var lang_loading;
+var lang_loop;
+var lang_loop_on;
+var lang_loop_off;
+var lang_play0;
+var lang_play1;
+var lang_pause;
+var lang_info;
+var lang_error;
+var loop_button_size;
+var loop_button_pos;
+var play_button_size;
+
 function preload() {
-  recordingsInfo = loadJSON("files/recordingsInfo.json");
+  recordingsInfo = loadJSON("../files/recordingsInfo.json");
 }
 
 function setup () {
@@ -69,9 +88,43 @@ function setup () {
   ellipseMode(RADIUS);
   angleMode(DEGREES);
   imageMode(CENTER);
-  // textFont("Laila");
   strokeJoin(ROUND);
   strokeCap(ROUND);
+
+
+  lang = select("html").elt.lang;
+
+  if (lang == "en") {
+    lang_select = "Select a recording";
+    lang_load = "Load audio";
+    lang_loop = "Loop";
+    lang_loop_on = 'Loop: On';
+    lang_loop_off = 'Loop: Off';
+    lang_play0 = "Play!";
+    lang_play1 = "Play";
+    lang_pause = "Pause";
+    lang_info = "+record info";
+    lang_loading = "Loading...";
+    lang_error = "Loading failed";
+    loop_button_size = 75;
+    loop_button_pos = width - 140 - margin*7;
+    play_button_size = 120;
+  } else if (lang == "tr") {
+    lang_select = "Bir parça seç";
+    lang_load = "Sesi yükle";
+    lang_loop = "Döngü";
+    lang_loop_on = 'Döngü: Açık';
+    lang_loop_off = 'Döngü: Kapalı';
+    lang_play0 = "Çal!";
+    lang_play1 = "Çal";
+    lang_pause = "Durdur";
+    lang_info = "+parça bilgisi";
+    lang_loading = "Yükleniyor...";
+    lang_error = "Yükleme Başarısız";
+    loop_button_size = 105;
+    loop_button_pos = width - 150 - margin*7;
+    play_button_size = 100;
+  }
 
   backColor = color(240, 128, 128);
   frontColor = color(120, 0, 0);
@@ -79,13 +132,14 @@ function setup () {
   recordingsList = recordingsInfo["recordingsList"];
 
   infoLink = select("#info-link");
-  infoLink.position(width-60, extraSpaceH + margin*3.5 + 30);
+  infoLink.position(width-120, extraSpaceH + margin*3.5 + 30);
+
   select = createSelect()
     .size(150, 25)
     .position(margin, margin)
     .changed(start)
     .parent("sketch-holder");
-  select.option("Select a recording");
+  select.option(lang_select);
   var noRec = select.child();
   noRec[0].setAttribute("selected", "true");
   noRec[0].setAttribute("disabled", "true");
@@ -94,13 +148,12 @@ function setup () {
   for (var i = 0; i < recordingsList.length; i++) {
     select.option(recordingsInfo[recordingsList[i]].info.option, i);
   }
-  buttonPlay = createButton("Load audio")
-    .size(120, 25)
-    .position(width - 120 - margin, margin)
+  buttonPlay = createButton(lang_load)
+    .size(play_button_size, 25)
+    .position(width - play_button_size - margin, margin)
     .mouseClicked(player)
     .attribute("disabled", "true")
     .parent("sketch-holder");
-
 
   navBox = new createNavigationBox();
   navCursor = new CreateNavCursor();
@@ -108,9 +161,10 @@ function setup () {
   cursorTop = extraSpaceH + margin*5 + 50;
   cursorBottom = navBox.y1-margin*3;
 
-  buttonLoop = createButton('L: Off')
-    .size(50,25)
-    .position(width - 120 - margin*7,margin)
+
+  buttonLoop = createButton(lang_loop)
+    .size(loop_button_size,25)
+    .position(loop_button_pos,margin)
     .mouseClicked(loopControl)
     .attribute("disabled", "true")
     .parent("sketch-holder");
@@ -128,6 +182,14 @@ function draw () {
   strokeWeight(5);
   stroke(frontColor);
   fill(backColor);
+  if ( title != undefined){
+ 	if(title.length > 40){
+	    var wordList = split(title,' ').slice(0,4);
+	    append(wordList,'...');
+	    title = join(wordList,' ');
+	}	 
+  }
+ 
   text(title, extraSpaceW + mainSpace/2, extraSpaceH + margin*3);
 
   stroke(0, 50);
@@ -141,12 +203,9 @@ function draw () {
   fill(0, 150);
   text(artist, extraSpaceW + mainSpace/2, extraSpaceH + margin*4 + 30);
 
-
-//Makam Usul Info Display
   var makam_usul_Text = join(['(Makam: ',makam,', Usül: ',usul,')'],'');
 
-  if(select.selected() != "Select a recording"){
-    // Makam-Usul Display
+  if(select.selected() != lang_select){
     textAlign(CENTER, BOTTOM);
     textStyle(NORMAL);
     textSize(18);
@@ -155,18 +214,7 @@ function draw () {
     fill(backColor);
     text(makam_usul_Text, extraSpaceW + mainSpace/2, height-navBoxH-margin*3/2);
 
-    // Usul Information
-    //dataDir = join(['files/',usul,'.jpg'],'');
-    //img = loadImage(dataDir);
-    //image(img,100,100);    
    }
-
-  // stroke("red");
-  // strokeWeight(1);
-  // line(0, cursorTop, width, cursorTop);
-  // stroke("green");
-  // strokeWeight(1);
-  // line(0, cursorBottom, width, cursorBottom);
 
   for (var i = 0; i < noteList.length; i++) {
     noteList[i].display();
@@ -182,7 +230,6 @@ function draw () {
     buttonLoop.removeAttribute("disabled");
   }
 
-  // Loop Player
   if(loaded){
     if(!paused){
       currentTime = track.currentTime();
@@ -203,8 +250,10 @@ function draw () {
     var p = pitchTrack[x];
     if (p != "S" && p >= minHz && p <= maxHz) {
       p = float(p);
+
       var targetY = map(p, minHz, maxHz, cursorBottom, cursorTop);
-      cursorY += (targetY - cursorY) * easing;
+      cursorY += (targetY - cursorY) * easing; // Proportional Feedback
+
       noStroke();
       fill("red");
       stroke(frontColor);
@@ -244,15 +293,12 @@ function createNavigationBox () {
     line(this.x1, this.y2, this.x2, this.y2);
   }
 
-  
-
   this.clicked = function () {
 
-    // Click Validation
     var click = (mouseX > this.x1 && mouseX < this.x2 && mouseY > this.y1 && mouseY < this.y2);
     var dummy;
+
     if(!looped){
-      // if the loop button is off jump normally
       if(click) {
         jump = map(mouseX, this.x1, this.x2, 0, trackDuration);
         if (paused) {
@@ -262,8 +308,7 @@ function createNavigationBox () {
           jump = undefined;
         }
       }
-    } else {
-      // if the loop button is on take time inputs
+    } else {  
       if(firstClick && click){
         secondClick = true;
         loopBound1 = mouseX;
@@ -291,7 +336,7 @@ function CreateNavCursor () {
   this.update = function () {
     this.x = map(currentTime, 0, trackDuration, navBox.x1+navCursorW/2, navBox.x2-navCursorW/2);
     if (navBox.x2 - navCursorW/2 - this.x < 0.005) {
-      buttonPlay.html("Play!");
+      buttonPlay.html(lang_play0);
       track.stop();
       paused = true;
       currentTime = 0;
@@ -333,12 +378,7 @@ function CreateNote (note) {
     this.lineW = 2;
     this.txtSize = 12;
     this.txtStyle = BOLD;
-  } else if (this.function == "samvadi") {
-    this.extraX = 0;
-    this.lineW = 2;
-    this.txtSize = 12;
-    this.txtStyle = NORMAL;
-  } else {
+  }  else {
     this.extraX = 0;
     this.lineW = 1;
     this.txtSize = 12;
@@ -353,12 +393,12 @@ function CreateNote (note) {
   this.display = function () {
     stroke(frontColor);
     strokeWeight(this.lineW);
-    line(this.lineX1, this.y, this.lineX2, this.y)
+    line(this.lineX1, this.y, this.lineX2, this.y);
 
     textAlign(LEFT, CENTER);
     noStroke();
-    textSize(this.txtSize);//this.radius*0.9);
-    textStyle(this.txtStyle);//this.txtStyle);
+    textSize(this.txtSize);
+    textStyle(this.txtStyle);
     fill(frontColor);
     if (this.name != '') {
       text(str(this.cent) + ' (' + this.name + ')', this.txtX1, this.y);
@@ -375,7 +415,7 @@ function createSound (note) {
   this.pitch = note.pitch;
   this.key = note.key;
   this.osc = new p5.Oscillator();
-  this.osc.setType("sawtooth");
+  this.osc.setType('sine');
   this.osc.freq(this.pitch);
   soundList[this.key] = this.osc;
 }
@@ -396,7 +436,7 @@ function start () {
   usul = currentRecording.info.usul
   link = currentRecording.info.link;
   infoLink.attribute("href", link)
-    .html("+info");
+    .html(lang_info);
   trackDuration = currentRecording.info.duration;
   pitchSpace = currentRecording.melody.pitchSpace;
   minHz = pitchSpace[0].cent - 100;
@@ -410,7 +450,7 @@ function start () {
   }
   pitchTrack = currentRecording.melody.pitchTrack;
   clock = new CreateClock;
-  buttonPlay.html("Load audio");
+  buttonPlay.html(lang_load);
   buttonPlay.removeAttribute("disabled");
 }
 
@@ -441,33 +481,37 @@ function player () {
         track.jump(jump);
         jump = undefined;
       }
-      buttonPlay.html("Pause");
+      buttonPlay.html(lang_pause);
     } else {
       paused = true;
       currentTime = track.currentTime();
       track.pause();
-      buttonPlay.html("Play");
+      buttonPlay.html(lang_play1);
     }
   } else {
     initLoading = millis();
-    buttonPlay.html("Loading...");
+    buttonPlay.html(lang_loading);
     buttonPlay.attribute("disabled", "true");
     select.attribute("disabled", "true");
-    track = loadSound("tracks/" + trackFile, soundLoaded, failedLoad);
+    track = loadSound("../tracks/" + trackFile, soundLoaded, failedLoad);
   }
 }
 
 function soundLoaded () {
-  buttonPlay.html("Play!");
+  buttonPlay.html(lang_play0);
   buttonPlay.removeAttribute("disabled");
   select.removeAttribute("disabled");
   loaded = true;
   var endLoading = millis();
-  print("Track loaded in " + (endLoading-initLoading)/1000 + " seconds");
+  if (lang == "en") {
+    print("Track loaded in " + (endLoading-initLoading)/1000 + " seconds.");
+  } else if (lang == "tr"){
+    print("Parça " + (endLoading-initLoading)/1000 + " saniyede yüklendi.");
+  }
 }
 
 function failedLoad () {
-  print("Loading failed");
+  print(lang_error);
 }
 
 function mouseClicked () {
@@ -487,7 +531,6 @@ function keyPressed () {
 }
 
 function rewindd(r){
-  // The name rewind() does not work somehow
   if(currentTime >= r){
     jump = currentTime - r;
   } else {
@@ -509,9 +552,9 @@ function loopControl(){
   looped = !looped;
 
   if(looped){
-    buttonLoop.html('L: On');
+    buttonLoop.html(lang_loop_on);
   } else {
-    buttonLoop.html('L: Off');
+    buttonLoop.html(lang_loop_off);
   }
 }
 
@@ -519,7 +562,6 @@ function keyReleased () {
   soundList[key.toLowerCase()].stop();
 }
 
-// Play/ Pause with the spacebar
 function keyTyped() {
   if (key === ' ' && loaded) {
     player();  
