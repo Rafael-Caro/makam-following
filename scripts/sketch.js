@@ -74,7 +74,13 @@ var loop_button_pos;
 var play_button_size;
 
 function preload() {
-  recordingsInfo = loadJSON("../files/recordingsInfo.json");
+  lang = select("html").elt.lang;
+  if (lang == "en") {
+    recordingsInfo = loadJSON("files/recordingsInfo.json");
+  } else if (lang == "tr") {
+    recordingsInfo = loadJSON("../files/recordingsInfo.json");
+  }
+  
 }
 
 function setup () {
@@ -91,8 +97,7 @@ function setup () {
   strokeJoin(ROUND);
   strokeCap(ROUND);
 
-
-  lang = select("html").elt.lang;
+  /*lang = select("html").elt.lang;*/
 
   if (lang == "en") {
     lang_select = "Select a recording";
