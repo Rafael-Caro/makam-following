@@ -77,10 +77,9 @@ function preload() {
   lang = select("html").elt.lang;
   if (lang == "en") {
     recordingsInfo = loadJSON("files/recordingsInfo.json");
-  } else if (lang == "tr") {
+  } else {
     recordingsInfo = loadJSON("../files/recordingsInfo.json");
-  }
-  
+  }  
 }
 
 function setup () {
@@ -97,8 +96,6 @@ function setup () {
   strokeJoin(ROUND);
   strokeCap(ROUND);
 
-  /*lang = select("html").elt.lang;*/
-
   if (lang == "en") {
     lang_select = "Select a recording";
     lang_load = "Load audio";
@@ -114,7 +111,7 @@ function setup () {
     loop_button_size = 75;
     loop_button_pos = width - 140 - margin*7;
     play_button_size = 120;
-  } else if (lang == "tr") {
+  } else  {
     lang_select = "Bir parça seç";
     lang_load = "Sesi yükle";
     lang_loop = "Döngü";
@@ -498,7 +495,11 @@ function player () {
     buttonPlay.html(lang_loading);
     buttonPlay.attribute("disabled", "true");
     select.attribute("disabled", "true");
-    track = loadSound("../tracks/" + trackFile, soundLoaded, failedLoad);
+    if (lang == "en") {
+      track = loadSound("tracks/" + trackFile, soundLoaded, failedLoad);
+    } else  {
+      track = loadSound("../tracks/" + trackFile, soundLoaded, failedLoad);
+    }
   }
 }
 
@@ -510,7 +511,7 @@ function soundLoaded () {
   var endLoading = millis();
   if (lang == "en") {
     print("Track loaded in " + (endLoading-initLoading)/1000 + " seconds.");
-  } else if (lang == "tr"){
+  } else {
     print("Parça " + (endLoading-initLoading)/1000 + " saniyede yüklendi.");
   }
 }
